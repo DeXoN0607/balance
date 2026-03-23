@@ -6,15 +6,19 @@ import static com.codeborne.selenide.Selenide.$;
 
 public class TransferPage {
 
-    private SelenideElement amountField = $("[data-test-id=amount] input");
-    private SelenideElement fromField = $("[data-test-id=from] input");
-    private SelenideElement transferButton = $("[data-test-id=action-transfer]");
+    private SelenideElement amountField = $("[data-test-id='amount'] input");
+    private SelenideElement fromField = $("[data-test-id='from'] input");
+    private SelenideElement transferButton = $("[data-test-id='action-transfer']");
+    private SelenideElement errorMessage = $("[data-test-id='error-notification'] .notification__content");
 
-    // Метод перевода с карты на карту и возврат на Dashboard
-    public DashboardPage transfer(String amount, String fromCardNumber) {
+    // перевод с указанной карты
+    public void transfer(String amount, ru.netology.balans.data.DataHelper.Card fromCard) {
         amountField.setValue(amount);
-        fromField.setValue(fromCardNumber);
+        fromField.setValue(fromCard.getNumber());
         transferButton.click();
-        return new DashboardPage();
+    }
+
+    public String getErrorMessage() {
+        return errorMessage.getText();
     }
 }
