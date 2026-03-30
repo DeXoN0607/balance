@@ -2,6 +2,8 @@ package ru.netology.balans.pages;
 
 import com.codeborne.selenide.SelenideElement;
 
+import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 
 public class TransferPage {
@@ -18,7 +20,8 @@ public class TransferPage {
         transferButton.click();
     }
 
-    public String getErrorMessage() {
-        return errorMessage.getText();
+    // Проверяет видимость и текст ошибки
+    public void checkErrorMessage(String expectedText) {
+        errorMessage.shouldBe(visible).shouldHave(text(expectedText));
     }
 }

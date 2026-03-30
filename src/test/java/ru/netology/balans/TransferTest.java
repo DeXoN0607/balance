@@ -9,7 +9,6 @@ import ru.netology.balans.pages.TransferPage;
 
 import static com.codeborne.selenide.Selenide.open;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TransferTest extends BaseTest {
 
@@ -25,10 +24,11 @@ public class TransferTest extends BaseTest {
         Card firstCard = DataHelper.getFirstCard();
         Card secondCard = DataHelper.getSecondCard();
 
-        int amount = 1000;
+        int secondBefore = dashboard.getCardBalance(secondCard);
+        // Считаем сумму как часть от баланса, а не хардкод
+        int amount = secondBefore / 2; // переводим половину с второй карты
 
         int firstBefore = dashboard.getCardBalance(firstCard);
-        int secondBefore = dashboard.getCardBalance(secondCard);
 
         dashboard.selectCardToDeposit(firstCard)
                 .transfer(String.valueOf(amount), secondCard);
@@ -58,13 +58,11 @@ public class TransferTest extends BaseTest {
 
         int amount = secondBefore + 5000; // больше, чем баланс второй карты
 
-        dashboard.selectCardToDeposit(firstCard)
-                .transfer(String.valueOf(amount), secondCard);
+        TransferPage transferPage = dashboard.selectCardToDeposit(firstCard);
+        transferPage.transfer(String.valueOf(amount), secondCard);
 
-        // проверяем сообщение об ошибке
-        TransferPage transferPage = new TransferPage();
-        String error = transferPage.getErrorMessage();
-        assertTrue(error.contains("Недостаточно денежных средств на карте"));
+        // Проверка через Selenide-ассерты внутри page object
+        transferPage.checkErrorMessage("Недостаточно денежных средств на карте");
 
         int firstAfter = dashboard.getCardBalance(firstCard);
         int secondAfter = dashboard.getCardBalance(secondCard);
