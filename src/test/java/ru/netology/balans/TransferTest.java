@@ -25,21 +25,16 @@ public class TransferTest extends BaseTest {
 
         int firstBefore = dashboard.getCardBalance(firstCard);
         int secondBefore = dashboard.getCardBalance(secondCard);
+        int amount = secondBefore/2;
+        TransferPage transferPage = dashboard.selectCardToDeposit(firstCard);
+        transferPage.transfer(String.valueOf(amount), secondCard);
 
-        // Переводим часть с первой карты на вторую (или наоборот, главное — логика)
-        int amount = firstBefore / 2; // берём половину с первой карты
-
-        dashboard.selectCardToDeposit(secondCard)  // пополняем вторую карту
-                .transfer(String.valueOf(amount), firstCard);  // с первой карты
-
-        // Обновляем страницу, чтобы получить актуальные балансы
-        dashboard = open("/", DashboardPage.class);
 
         int firstAfter = dashboard.getCardBalance(firstCard);
         int secondAfter = dashboard.getCardBalance(secondCard);
 
-        assertEquals(firstBefore - amount, firstAfter);
-        assertEquals(secondBefore + amount, secondAfter);
+        assertEquals(firstBefore + amount, firstAfter);
+        assertEquals(secondBefore - amount, secondAfter);
     }
 
     @Test
@@ -62,7 +57,6 @@ public class TransferTest extends BaseTest {
         TransferPage transferPage = dashboard.selectCardToDeposit(firstCard);
         transferPage.transfer(String.valueOf(amount), secondCard);
 
-        // Проверка через Selenide-ассерты внутри page object
         transferPage.checkErrorMessage("Недостаточно денежных средств на карте");
 
         int firstAfter = dashboard.getCardBalance(firstCard);
