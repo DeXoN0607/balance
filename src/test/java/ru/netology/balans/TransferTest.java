@@ -14,7 +14,6 @@ public class TransferTest extends BaseTest {
 
     @Test
     void shouldTransferMoneyBetweenCards() {
-
         var user = DataHelper.getAuthUser();
 
         DashboardPage dashboard = open("/", LoginPage.class)
@@ -24,21 +23,23 @@ public class TransferTest extends BaseTest {
         Card firstCard = DataHelper.getFirstCard();
         Card secondCard = DataHelper.getSecondCard();
 
-        int secondBefore = dashboard.getCardBalance(secondCard);
-        // Считаем сумму как часть от баланса, а не хардкод
-        int amount = secondBefore / 2; // переводим половину с второй карты
-
         int firstBefore = dashboard.getCardBalance(firstCard);
+        int secondBefore = dashboard.getCardBalance(secondCard);
 
-        dashboard.selectCardToDeposit(firstCard)
-                .transfer(String.valueOf(amount), secondCard);
+        // Переводим часть с первой карты на вторую (или наоборот, главное — логика)
+        int amount = firstBefore / 2; // берём половину с первой карты
 
+        dashboard.selectCardToDeposit(secondCard)  // пополняем вторую карту
+                .transfer(String.valueOf(amount), firstCard);  // с первой карты
+
+        // Обновляем страницу, чтобы получить актуальные балансы
+        dashboard = open("/", DashboardPage.class);
 
         int firstAfter = dashboard.getCardBalance(firstCard);
         int secondAfter = dashboard.getCardBalance(secondCard);
 
-        assertEquals(firstBefore + amount, firstAfter);
-        assertEquals(secondBefore - amount, secondAfter);
+        assertEquals(firstBefore - amount, firstAfter);
+        assertEquals(secondBefore + amount, secondAfter);
     }
 
     @Test
