@@ -25,7 +25,7 @@ public class TransferTest extends BaseTest {
 
         int firstBefore = dashboard.getCardBalance(firstCard);
         int secondBefore = dashboard.getCardBalance(secondCard);
-        int amount = secondBefore/2;
+        int amount = Math.abs(secondBefore) / 2;
         TransferPage transferPage = dashboard.selectCardToDeposit(firstCard);
         transferPage.transfer(String.valueOf(amount), secondCard);
 
