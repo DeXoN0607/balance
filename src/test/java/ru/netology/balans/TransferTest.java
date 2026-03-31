@@ -52,7 +52,7 @@ public class TransferTest extends BaseTest {
         int firstBefore = dashboard.getCardBalance(firstCard);
         int secondBefore = dashboard.getCardBalance(secondCard);
 
-        int amount = secondBefore + 5000; // больше, чем баланс второй карты
+        int amount = secondBefore + 5000;
 
         TransferPage transferPage = dashboard.selectCardToDeposit(firstCard);
         transferPage.transfer(String.valueOf(amount), secondCard);
